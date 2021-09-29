@@ -9,9 +9,9 @@ logging.basicConfig(level=logging.DEBUG)
 routes = web.RouteTableDef()
 
 if os.getenv('CONTENT_FOLDER'):
-    routes.static('/', os.getenv('CONTENT_FOLDER'))
+    routes.static('/', os.getenv('CONTENT_FOLDER'), show_index=True, follow_symlinks=True)
 else:
-    routes.static('/', sys.argv[1])
+    routes.static('/', sys.argv[1], show_index=True, follow_symlinks=True)
 
 app.add_routes(routes)
 
