@@ -23,14 +23,17 @@ class AccessLogger(AbstractAccessLogger):
             remote = request.remote
         self.logger.info(f'{remote} '
                          f'"{request.method} {request.path} '
-                         f'done in {time}s: {response.status}')
+                         f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
 
 
 @web.middleware
 async def main_middleware(request, handler):
-    for _ in bad_useragent_chunks:
-        if search(_, request.headers['User-Agent']):
-            return web.Response(status=403, text="Go away motherfucker.")
+    if 'User-Agent' in request.headers:
+        for _ in bad_useragent_chunks:
+            if search(_, request.headers['User-Agent']):
+                return web.Response(status=403, text="Go away motherfucker.")
+    else:
+        return web.Response(status=418, text="Who are you?")
     response = await handler(request)
     return response
 
