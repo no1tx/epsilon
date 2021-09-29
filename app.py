@@ -34,11 +34,11 @@ class AccessLogger(AbstractAccessLogger):
             country = 'N'
             city = 'N'
         if 'User-Agent' in request.headers:
-            self.logger.info(f'{remote} {continent}:{country}:{city}'
+            self.logger.info(f'{remote} {continent}:{country}:{city} '
                              f'{request.method} {request.path} '
                              f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
         else:
-            self.logger.info(f'{remote} {continent}:{country}:{city}'
+            self.logger.info(f'{remote} {continent}:{country}:{city} '
                              f'{request.method} {request.path} '
                              f': detected a teapot without User-Agent header.')
 
