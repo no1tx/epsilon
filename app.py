@@ -23,11 +23,11 @@ class AccessLogger(AbstractAccessLogger):
             remote = request.remote
         if 'User-Agent' in request.headers:
             self.logger.info(f'{remote} '
-                             f'"{request.method} {request.path} '
+                             f'{request.method} {request.path} '
                              f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
         else:
             self.logger.info(f'{remote} '
-                             f'"{request.method} {request.path} '
+                             f'{request.method} {request.path} '
                              f': detected a teapot without User-Agent header.')
 
 
@@ -46,11 +46,11 @@ async def main_middleware(request, handler):
 if os.getenv('CONTENT_FOLDER'):
     routes.static('/', os.getenv('CONTENT_FOLDER'), show_index=True, follow_symlinks=True)
 else:
-    routes.static('/', sys.argv[1], show_index=True, follow_symlinks=True)
+    routes.static('/', sys.argv[2], show_index=True, follow_symlinks=True)
 
 app = web.Application(middlewares=[main_middleware])
 
 app.add_routes(routes)
 
 if __name__ == '__main__':
-    web.run_app(app=app, host='0.0.0.0', port=8000, access_log_class=AccessLogger)
+    web.run_app(app=app, host='0.0.0.0', port=int(sys.argv[1]), access_log_class=AccessLogger)
