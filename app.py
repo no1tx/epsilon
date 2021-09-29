@@ -27,7 +27,7 @@ class AccessLogger(AbstractAccessLogger):
         geoip = geoip_match.get(remote)
         if geoip is not None:
             continent = geoip['continent']['code']
-            country = geoip['country']['code']
+            country = geoip['country']['iso_code']
             city = geoip['city']['names']['en']
         else:
             continent = 'N'
