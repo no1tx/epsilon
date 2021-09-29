@@ -4,6 +4,9 @@ from aiohttp.abc import AbstractAccessLogger
 import os
 import sys
 from re import search
+from geolite2 import geolite2
+
+geoip_match = geolite2.reader()
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger()
@@ -21,12 +24,21 @@ class AccessLogger(AbstractAccessLogger):
             remote = request.headers['X-Real-IP']
         else:
             remote = request.remote
+        geoip = geoip_match.get(remote)
+        if geoip is not None:
+            continent = geoip['continent']['code']
+            country = geoip['country']['code']
+            city = geoip['city']['names']['en']
+        else:
+            continent = 'N'
+            country = 'N'
+            city = 'N'
         if 'User-Agent' in request.headers:
-            self.logger.info(f'{remote} '
+            self.logger.info(f'{remote} {continent}:{country}:{city}'
                              f'{request.method} {request.path} '
                              f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
         else:
-            self.logger.info(f'{remote} '
+            self.logger.info(f'{remote} {continent}:{country}:{city}'
                              f'{request.method} {request.path} '
                              f': detected a teapot without User-Agent header.')
 

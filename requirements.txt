@@ -7,8 +7,11 @@ cchardet==2.1.7
 cffi==1.14.6
 chardet==4.0.0
 idna==3.2
+maxminddb==2.2.0
+maxminddb-geolite2==2018.703
 multidict==5.1.0
 pycares==4.0.0
 pycparser==2.20
+python-geoip==1.2
 typing-extensions==3.10.0.2
 yarl==1.6.3
