@@ -21,9 +21,14 @@ class AccessLogger(AbstractAccessLogger):
             remote = request.headers['X-Real-IP']
         else:
             remote = request.remote
-        self.logger.info(f'{remote} '
-                         f'"{request.method} {request.path} '
-                         f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
+        if 'User-Agent' in request.headers:
+            self.logger.info(f'{remote} '
+                             f'"{request.method} {request.path} '
+                             f'done in {round(time, 2)}s: {response.status}. User Agent: {request.headers["User-Agent"]}')
+        else:
+            self.logger.info(f'{remote} '
+                             f'"{request.method} {request.path} '
+                             f': detected a teapot without User-Agent header.')
 
 
 @web.middleware
