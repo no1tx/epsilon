@@ -28,7 +28,10 @@ class AccessLogger(AbstractAccessLogger):
         if geoip is not None:
             continent = geoip['continent']['code']
             country = geoip['country']['iso_code']
-            city = geoip['city']['names']['en']
+            try:
+                city = geoip['city']['names']['en']
+            except:
+                city = 'N'
         else:
             continent = 'N'
             country = 'N'
