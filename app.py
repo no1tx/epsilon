@@ -1,10 +1,11 @@
 import logging
 from aiohttp import web
+from aiohttp.abc import AbstractAccessLogger
 import os
 import sys
 from re import search
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger()
 
 routes = web.RouteTableDef()
@@ -12,6 +13,17 @@ routes = web.RouteTableDef()
 bad_useragent_chunks = [
     'bot', 'Bot', 'Crawler', 'crawl', 'Crawl',
 ]
+
+
+class AccessLogger(AbstractAccessLogger):
+    def log(self, request, response, time):
+        if 'X-Real-IP' in request.headers:
+            remote = request.headers['X-Real-IP']
+        else:
+            remote = request.remote
+        self.logger.info(f'{remote} '
+                         f'"{request.method} {request.path} '
+                         f'done in {time}s: {response.status}')
 
 
 @web.middleware
@@ -33,4 +45,4 @@ app = web.Application(middlewares=[main_middleware])
 app.add_routes(routes)
 
 if __name__ == '__main__':
-    web.run_app(app=app, host='0.0.0.0', port=8000)
+    web.run_app(app=app, host='0.0.0.0', port=8000, access_log_class=AccessLogger)
